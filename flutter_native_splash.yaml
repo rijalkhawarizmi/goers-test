@@ -1,0 +1,12 @@
+flutter_native_splash:
+  android: true
+  color: "#ffffff"
+  image: assets/plane.png
+  branding: assets/brand.png
+
+  android_12:
+    image: assets/plane.png
+    color: "#ffffff"
+    branding: assets/brand.png
+
+  web: false

@@ -1,0 +1,17 @@
+flutter_launcher_icons:
+  image_path: "assets/plane.png"
+
+  android: "launcher_icon"
+  image_path_android: "assets/plane.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "assets/plane.png"
+  adaptive_icon_monochrome: "assets/plane.png"
+
+  ios: true
+  image_path_ios: "assets/plane.png"
+  remove_alpha_channel_ios: true
+  remove_alpha_ios: true
+  # image_path_ios_dark_transparent: "assets/plane.png"
+  # image_path_ios_tinted_grayscale: "assets/plane.png"
+  desaturate_tinted_to_grayscale_ios: true
