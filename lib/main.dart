@@ -10,7 +10,7 @@ import 'package:goers_test/species/presentation/pages/species_page.dart';
 void main() {
  
   WidgetsFlutterBinding.ensureInitialized();
-  const  apiUrl = String.fromEnvironment("ALEX");
+  const  apiUrl = String.fromEnvironment("ALEXXXXX");
   log("📦 API URL loaded: $apiUrl");
   init();
   runApp(const MyApp());
