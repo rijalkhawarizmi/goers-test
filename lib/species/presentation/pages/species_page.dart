@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:goers_test/species/presentation/pages/detail_species.dart';
 import 'package:goers_test/species/presentation/widget/detail_row_widget.dart';
 
 import '../../../core/utils/format_date.dart';
@@ -60,60 +61,67 @@ class _SpeciesPageState extends State<SpeciesPage> {
                         itemBuilder: (BuildContext context, int index) {
                           return index >= state.speciesEntity.length
                               ? const Center(child: CircularProgressIndicator())
-                              : Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Card(
-                                  elevation: 4,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        DetailRowWidget(
-                                          label: 'Classification',
-                                          value: state.speciesEntity[index].fields?.classification ?? "-"
-                                        ),
-                                        DetailRowWidget(
-                                          label: 'Designation',
-                                          value: state.speciesEntity[index].fields?.designation ?? "-" 
-                                        ),
-                                        DetailRowWidget(
-                                          label: 'Average Lifespan',
-                                          value: state.speciesEntity[index].fields?.averageLifespan ?? "-"
-                                        ),
-                                        DetailRowWidget(
-                                          label: 'Average Height',
-                                          value: state.speciesEntity[index].fields?.averageHeight ?? "-"
-                                        ),
-                                        DetailRowWidget(
-                                          label: 'Eye Colors',
-                                          value: state.speciesEntity[index].fields?.eyeColors ?? "-"
-                                        ),
-                                        DetailRowWidget(
-                                          label: 'Skin Colors',
-                                          value: state.speciesEntity[index].fields?.skinColors ?? "-"
-                                        ),
-                                        DetailRowWidget(
-                                          label: 'Hair Colors',
-                                          value: state.speciesEntity[index].fields?.hairColors ?? "-"
-                                        ),
-                                        DetailRowWidget(
-                                          label: 'Language',
-                                          value: state.speciesEntity[index].fields?.language ?? "-"
-                                        ),
-                                        DetailRowWidget(
-                                          label: 'Created',
-                                          value: formatDate(state.speciesEntity[index].fields?.created?.toIso8601String()),
-                                        ),
-                                        DetailRowWidget(
-                                          label: 'Edited',
-                                          value: formatDate(state.speciesEntity[index].fields?.edited?.toIso8601String()),
-                                        ),
-                                      ],
+                              : InkWell(
+                                onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (c){
+                                    return DetailSpecies(species: state.speciesEntity[index]);
+                                  }));
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Card(
+                                    elevation: 4,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          DetailRowWidget(
+                                            label: 'Classification',
+                                            value: state.speciesEntity[index].fields?.classification ?? "-"
+                                          ),
+                                          DetailRowWidget(
+                                            label: 'Designation',
+                                            value: state.speciesEntity[index].fields?.designation ?? "-" 
+                                          ),
+                                          DetailRowWidget(
+                                            label: 'Average Lifespan',
+                                            value: state.speciesEntity[index].fields?.averageLifespan ?? "-"
+                                          ),
+                                          DetailRowWidget(
+                                            label: 'Average Height',
+                                            value: state.speciesEntity[index].fields?.averageHeight ?? "-"
+                                          ),
+                                          DetailRowWidget(
+                                            label: 'Eye Colors',
+                                            value: state.speciesEntity[index].fields?.eyeColors ?? "-"
+                                          ),
+                                          DetailRowWidget(
+                                            label: 'Skin Colors',
+                                            value: state.speciesEntity[index].fields?.skinColors ?? "-"
+                                          ),
+                                          DetailRowWidget(
+                                            label: 'Hair Colors',
+                                            value: state.speciesEntity[index].fields?.hairColors ?? "-"
+                                          ),
+                                          DetailRowWidget(
+                                            label: 'Language',
+                                            value: state.speciesEntity[index].fields?.language ?? "-"
+                                          ),
+                                          DetailRowWidget(
+                                            label: 'Created',
+                                            value: formatDate(state.speciesEntity[index].fields?.created?.toIso8601String()),
+                                          ),
+                                          DetailRowWidget(
+                                            label: 'Edited',
+                                            value: formatDate(state.speciesEntity[index].fields?.edited?.toIso8601String()),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),

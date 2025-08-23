@@ -1,3 +1,6 @@
+
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:goers_test/core/services/injection_container.dart';
@@ -5,7 +8,10 @@ import 'package:goers_test/species/presentation/bloc/species_bloc.dart';
 import 'package:goers_test/species/presentation/pages/species_page.dart';
 
 void main() {
-   WidgetsFlutterBinding.ensureInitialized();
+ 
+  WidgetsFlutterBinding.ensureInitialized();
+  const  apiUrl = String.fromEnvironment("ALEX");
+  log("📦 API URL loaded: $apiUrl");
   init();
   runApp(const MyApp());
 }
