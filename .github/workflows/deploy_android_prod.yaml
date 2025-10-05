@@ -25,7 +25,6 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
-<<<<<<< HEAD
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -72,10 +71,3 @@ jobs:
             version:${{ github.event.inputs.version }} \
             build_number:${{ github.event.inputs.build_number }} \
             release_notes:"${{ github.event.inputs.release_notes }}"
-=======
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Run development-specific tests
-        run: echo "Running tests for development branch..."
-      # Add other steps relevant to your development workflow
->>>>>>> 0f18d11eed94616465562d1d37a066de89158391
