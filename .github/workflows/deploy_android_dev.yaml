@@ -1,9 +1,6 @@
-name: Deploy Android App to Production
+name: Deploy Android App to dev
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
     branches:
       - development
@@ -19,7 +16,7 @@ on:
       release_notes:
         description: "Release Notes"
         required: true
-        default: "Production Release"
+        default: "dev Release"
 
 jobs:
   build-and-test:
