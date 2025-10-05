@@ -1,4 +1,4 @@
-name: Deploy Android App to Production
+name: Deploy Android App to dev
 
 on:
   push:
@@ -19,7 +19,7 @@ on:
       release_notes:
         description: "Release Notes"
         required: true
-        default: "Production Release"
+        default: "dev Release"
 
 jobs:
   build-and-test:
