@@ -1,6 +1,9 @@
 name: Deploy Android App to dev
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
     branches:
       - development
