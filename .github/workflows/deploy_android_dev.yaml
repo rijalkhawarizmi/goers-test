@@ -1,12 +1,6 @@
-name: Deploy Android App to dev
-
+name: Deploy Android App to Development
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
-    branches:
-      - development
     inputs:
       version:
         description: "App Version (e.g., 1.0.0)"
@@ -19,55 +13,46 @@ on:
       release_notes:
         description: "Release Notes"
         required: true
-        default: "dev Release"
-
+        default: "Development Build"
+      groups:
+        description: "Firebase Tester Groups"
+        required: true
+        default: "Internal"
+      testers:
+        description: "Firebase Testers"
+        required: false
+        default: ""
 jobs:
-  build-and-test:
+  deployAndroidDevelopment:
     runs-on: ubuntu-latest
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      - name: Setup Java
-        uses: actions/setup-java@v1
-        with:
-          java-version: "17"
-
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.24.5"
           channel: "stable"
           cache: true
-
+        id: flutter
+      - name: Get Flutter Dependencies
+        run: flutter pub get
       - name: Setup Ruby and Fastlane
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.3"
           bundler-cache: true
           working-directory: android
-
-      - name: Configure Keystore
+      - name: Set up Firebase authentication
+        run: echo "$FIREBASE_SERVICE_ACCOUNT" > android/fastlane/service-account.json
+      - name: Build and Deploy to Firebase App Distribution
         run: |
-          echo "$RELEASE_SIGNING_KEY" > release.jks.b64
-          base64 -d -i release.jks.b64 > android/app/release.keystore
-
-      - name: Set up Supply Key file
-        working-directory: android
-        run: echo "$SUPPLY_KEY" > fastlane/supply.json
-
-      - name: Setup store key properties
-        working-directory: android
-        run: echo "$RELEASE_KEYSTORE_PROPERTIES" > key.properties
-
-      - name: Ensure Fastlane Metadata Directory Exists
-        working-directory: android
-        run: mkdir -p fastlane/metadata/android/en-US/changelogs
-
-      - name: Build and Deploy to Play Store
-        working-directory: android
-        run: |
-          bundle exec fastlane android production \
+          cd ./android
+          bundle exec fastlane android development \
             version:${{ github.event.inputs.version }} \
             build_number:${{ github.event.inputs.build_number }} \
-            release_notes:"${{ github.event.inputs.release_notes }}"
+            release_notes:"${{ github.event.inputs.release_notes }}" \
+            groups:${{ github.event.inputs.groups }} \
+            testers:${{ github.event.inputs.testers }}
