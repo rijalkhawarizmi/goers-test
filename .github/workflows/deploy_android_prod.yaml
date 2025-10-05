@@ -1,7 +1,12 @@
 name: Deploy Android App to Production
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
+    branches:
+      - development
     inputs:
       version:
         description: "App Version (e.g., 1.0.0)"
@@ -17,22 +22,9 @@ on:
         default: "Production Release"
 
 jobs:
-  validate_branch:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check branch
-        run: |
-          echo "🧩 Current branch: $GITHUB_REF"
-          if [ "$GITHUB_REF" != "refs/heads/development" ]; then
-            echo "❌ This workflow can only be run on 'development' branch."
-            exit 1
-          fi
-          echo "✅ Branch validation passed!"
-
   deployAndroidProduction:
-    needs: validate_branch
-    runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/development'
+    runs-on: ubuntu-latest
     env:
       FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
       RELEASE_SIGNING_KEY: ${{ secrets.RELEASE_SIGNING_KEY }}
@@ -41,35 +33,43 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
           java-version: "17"
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.24.5"
           channel: "stable"
           cache: true
+
       - name: Setup Ruby and Fastlane
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.3"
           bundler-cache: true
           working-directory: android
+
       - name: Configure Keystore
         run: |
           echo "$RELEASE_SIGNING_KEY" > release.jks.b64
           base64 -d -i release.jks.b64 > android/app/release.keystore
+
       - name: Set up Supply Key file
         working-directory: android
         run: echo "$SUPPLY_KEY" > fastlane/supply.json
+
       - name: Setup store key properties
         working-directory: android
         run: echo "$RELEASE_KEYSTORE_PROPERTIES" > key.properties
+
       - name: Ensure Fastlane Metadata Directory Exists
         working-directory: android
         run: mkdir -p fastlane/metadata/android/en-US/changelogs
+
       - name: Build and Deploy to Play Store
         working-directory: android
         run: |
