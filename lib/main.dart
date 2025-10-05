@@ -13,6 +13,7 @@ void main() {
   const  apiUrl = String.fromEnvironment("ALEXXXXX");
   log("📦 API URL loaded: $apiUrl");
   log("📦 API URLllllll loaded: $apiUrl");
+  log("📦 API URLlllllllllll loaded: $apiUrl");
   init();
   runApp(const MyApp());
 }
