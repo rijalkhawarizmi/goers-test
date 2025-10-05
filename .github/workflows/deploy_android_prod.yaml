@@ -1,0 +1,64 @@
+name: Deploy Android App to Production
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "App Version (e.g., 1.0.0)"
+        required: true
+        default: "1.0.0"
+      build_number:
+        description: "Build Number (e.g., 42)"
+        required: true
+        default: "1"
+      release_notes:
+        description: "Release Notes"
+        required: true
+        default: "Production Release"
+jobs:
+  deployAndroidProduction:
+    runs-on: ubuntu-latest
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      RELEASE_SIGNING_KEY: ${{ secrets.RELEASE_SIGNING_KEY }}
+      RELEASE_KEYSTORE_PROPERTIES: ${{ secrets.RELEASE_KEYSTORE_PROPERTIES }}
+      SUPPLY_KEY: ${{ secrets.SUPPLY_KEY }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: "17"
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.24.5"
+          channel: "stable"
+          cache: true
+        id: flutter
+      - name: Setup Ruby and Fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+          working-directory: android
+      - name: Configure Keystore
+        run: |
+          echo "$RELEASE_SIGNING_KEY" > release.jks.b64
+          base64 -d -i release.jks.b64 > android/app/release.keystore
+      - name: Set up Supply Key file
+        working-directory: android
+        run: echo "$SUPPLY_KEY" > fastlane/supply.json
+      - name: Setup store key properties
+        working-directory: android
+        run: echo "$RELEASE_KEYSTORE_PROPERTIES" > key.properties
+      - name: Ensure Fastlane Metadata Directory Exists
+        working-directory: android
+        run: mkdir -p fastlane/metadata/android/en-US/changelogs
+      - name: Build and Deploy to Play Store
+        working-directory: android
+        run: |
+          bundle exec fastlane android production \
+            version:${{ github.event.inputs.version }} \
+            build_number:${{ github.event.inputs.build_number }} \
+            release_notes:"${{ github.event.inputs.release_notes }}"
