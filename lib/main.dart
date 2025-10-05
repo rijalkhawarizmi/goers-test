@@ -12,6 +12,7 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   const  apiUrl = String.fromEnvironment("ALEXXXXX");
   log("📦 API URL loaded: $apiUrl");
+  log("📦 API URLllllll loaded: $apiUrl");
   init();
   runApp(const MyApp());
 }
