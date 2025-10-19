@@ -14,7 +14,11 @@ on:
         description: "Release Note"
         required: true
         default: "Production Release"
-        type: text
+        type: string
+      message:
+        description: 'Enter your custom message (supports multiple lines)'
+        required: true
+        type: string
 jobs:
   deployAndroidProduction:
     runs-on: ubuntu-latest
