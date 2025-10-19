@@ -1,10 +1,9 @@
 name: Deploy Android App to Development
-
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: "App Version"
+        description: "App Version (e.g., 1.0.0)"
         required: true
         default: "1.0.0"
       build_number:
@@ -12,25 +11,59 @@ on:
         required: true
         default: "1"
       release_notes:
-        description: "Release Notes"
+        description: "Release Note"
         required: true
-        default: "Development Build"
-      groups:
-        description: "Firebase Tester Groups"
+        default: "Production Release"
+        type: string
+      message:
+        description: 'Input message'
         required: true
-        default: "Internal"
-      testers:
-        description: "Firebase Testers"
-        required: false
-        default: ""
+        type: string
 jobs:
-  greet:
+  deployAndroidProduction:
     runs-on: ubuntu-latest
-
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      RELEASE_SIGNING_KEY: ${{ secrets.RELEASE_SIGNING_KEY }}
+      RELEASE_KEYSTORE_PROPERTIES: ${{ secrets.RELEASE_KEYSTORE_PROPERTIES }}
+      SUPPLY_KEY: ${{ secrets.SUPPLY_KEY }}
     steps:
-    - name: Send greeting
-      run: echo "${{ github.event.inputs.message }} ${{ fromJSON('["", "🥳"]')[github.event.inputs.use-emoji == 'true'] }} ${{ github.event.inputs.name }}"
-Learn more about workflow inputs.
-For questions, visit the GitHub Actions community.
-To see what's next for Actions, visit our public roadmap.
-
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: "17"
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.24.5"
+          channel: "stable"
+          cache: true
+        id: flutter
+      - name: Setup Ruby and Fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+          working-directory: android
+      - name: Configure Keystore
+        run: |
+          echo "$RELEASE_SIGNING_KEY" > release.jks.b64
+          base64 -d -i release.jks.b64 > android/app/release.keystore
+      - name: Set up Supply Key file
+        working-directory: android
+        run: echo "$SUPPLY_KEY" > fastlane/supply.json
+      - name: Setup store key properties
+        working-directory: android
+        run: echo "$RELEASE_KEYSTORE_PROPERTIES" > key.properties
+      - name: Ensure Fastlane Metadata Directory Exists
+        working-directory: android
+        run: mkdir -p fastlane/metadata/android/en-US/changelogs
+      - name: Build and Deploy to Play Store
+        working-directory: android
+        run: |
+          bundle exec fastlane android production \
+            version:${{ github.event.inputs.version }} \
+            build_number:${{ github.event.inputs.build_number }} \
+            release_notes:"${{ github.event.inputs.release_notes }}"
