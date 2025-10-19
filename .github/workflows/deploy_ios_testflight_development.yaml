@@ -1,5 +1,8 @@
 name: Deploy iOS to Testflight Development
 on:
+  push:
+    branches:
+      - development
   workflow_dispatch:
     inputs:
       release_notes:
