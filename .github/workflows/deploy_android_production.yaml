@@ -18,7 +18,7 @@ on:
       message:
         description: 'Enter your custom message (supports multiple lines)'
         required: true
-        type: string
+        type: text
 jobs:
   deployAndroidProduction:
     runs-on: ubuntu-latest
