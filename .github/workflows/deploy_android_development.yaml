@@ -3,20 +3,26 @@ name: Deploy Android App to Development
 on:
   workflow_dispatch:
     inputs:
-      name:
-        type: choice
-        description: Who to greet
-        options: 
-        - monalisa
-        - cschleiden
-      message:
+      version:
+        description: "App Version"
         required: true
-      use-emoji:
-        type: boolean
-        description: Include 🎉🤣 emojis
-      environment:
-        type: environment
-
+        default: "1.0.0"
+      build_number:
+        description: "Build Number"
+        required: true
+        default: "1"
+      release_notes:
+        description: "Release Notes"
+        required: true
+        default: "Development Build"
+      groups:
+        description: "Firebase Tester Groups"
+        required: true
+        default: "Internal"
+      testers:
+        description: "Firebase Testers"
+        required: false
+        default: ""
 jobs:
   greet:
     runs-on: ubuntu-latest
