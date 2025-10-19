@@ -6,13 +6,10 @@ on:
         description: "App Version"
         required: true
         default: "1.0.0"
-      multiline_text:
-        description: 'Enter multiline text'
-        required: false
-        type: string
-        default: |
-          This is the default
-          multiline text.
+      added:
+        description: List of Additions, example: '["Added foo", "Added bar"]'
+        required: true
+        default: '[]'
       groups:
         description: "Firebase Tester Groups"
         required: true
