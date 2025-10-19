@@ -1,4 +1,5 @@
 name: Deploy Android App to Development
+
 on:
   workflow_dispatch:
     inputs:
@@ -23,36 +24,13 @@ on:
         required: false
         default: ""
 jobs:
-  deployAndroidDevelopment:
+  greet:
     runs-on: ubuntu-latest
-    env:
-      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: "3.24.5"
-          channel: "stable"
-          cache: true
-        id: flutter
-      - name: Get Flutter Dependencies
-        run: flutter pub get
-      - name: Setup Ruby and Fastlane
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "3.3"
-          bundler-cache: true
-          working-directory: android
-      - name: Set up Firebase authentication
-        run: echo "$FIREBASE_SERVICE_ACCOUNT" > android/fastlane/service-account.json
-      - name: Build and Deploy to Firebase App Distribution
-        run: |
-          cd ./android
-          bundle exec fastlane android development \
-            version:${{ github.event.inputs.version }} \
-            build_number:${{ github.event.inputs.build_number }} \
-            release_notes:"${{ github.event.inputs.release_notes }}" \
-            groups:${{ github.event.inputs.groups }} \
-            testers:${{ github.event.inputs.testers }}
+    - name: Send greeting
+      run: echo "${{ github.event.inputs.message }} ${{ fromJSON('["", "🥳"]')[github.event.inputs.use-emoji == 'true'] }} ${{ github.event.inputs.name }}"
+Learn more about workflow inputs.
+For questions, visit the GitHub Actions community.
+To see what's next for Actions, visit our public roadmap.
+
