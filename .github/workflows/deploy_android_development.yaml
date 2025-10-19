@@ -1,5 +1,4 @@
 name: Deploy Android App to Development
-
 on:
   workflow_dispatch:
     inputs:
