@@ -14,6 +14,7 @@ on:
         description: "Release Notes"
         required: true
         default: "Production Release"
+        type: text
 jobs:
   deployAndroidProduction:
     runs-on: ubuntu-latest
