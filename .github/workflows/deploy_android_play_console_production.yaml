@@ -10,7 +10,6 @@ on:
         description: "Release Notes"
         required: true
         default: "New Release"
-        type: text
 jobs:
   deployAndroidPlayConsoleProduction:
     runs-on: ubuntu-latest

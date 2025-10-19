@@ -6,10 +6,11 @@ on:
         description: "App Version"
         required: true
         default: "1.0.0"
-      added:
-        description: List of Additions, example: '["Added foo", "Added bar"]'
+      release_notes:
+        description: "Release Notes"
         required: true
-        default: '[]'
+        default: "New Release Development"
+        type: text
       groups:
         description: "Firebase Tester Groups"
         required: true
