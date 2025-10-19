@@ -11,10 +11,10 @@ on:
         required: true
         default: "1"
       release_notes:
-        description: "Release Notes"
+        description: "Release Note"
         required: true
         default: "Production Release"
-        type: string
+        type: text
 jobs:
   deployAndroidProduction:
     runs-on: ubuntu-latest
