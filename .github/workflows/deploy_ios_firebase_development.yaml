@@ -1,8 +1,5 @@
 name: Deploy iOS to Firebase Development
 on:
-  push:
-    branches:
-      - development
   workflow_dispatch:
     inputs:
       version:

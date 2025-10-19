@@ -1,8 +1,5 @@
 name: Deploy Android to Play Console Production
 on:
-  push:
-    branches:
-      - development
   workflow_dispatch:
     inputs:
       version:
