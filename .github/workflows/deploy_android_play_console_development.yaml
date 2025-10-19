@@ -1,32 +1,24 @@
-name: Deploy Android App to Production
+name: Deploy Android to Play Console Development
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: "App Version (e.g., 1.0.0)"
+        description: "App Version"
         required: true
         default: "1.0.0"
-      build_number:
-        description: "Build Number"
-        required: true
-        default: "1"
       release_notes:
-        description: "Release Note"
+        description: "Release Notes"
         required: true
-        default: "Production Release"
-        type: string
-      message:
-        description: 'Input messag'
-        required: true
-        type: string
+        default: "New Development Release"
+        type: text
 jobs:
-  deployAndroidProduction:
+  deployAndroidPlayConsoleDevelopment:
     runs-on: ubuntu-latest
     env:
-      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      FIREBASE_SERVICE_ACCOUNT_DEVELOPMENT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DEVELOPMENT }}
       RELEASE_SIGNING_KEY: ${{ secrets.RELEASE_SIGNING_KEY }}
       RELEASE_KEYSTORE_PROPERTIES: ${{ secrets.RELEASE_KEYSTORE_PROPERTIES }}
-      SUPPLY_KEY: ${{ secrets.SUPPLY_KEY }}
+      SUPPLY_KEY_DEVELOPMENT: ${{ secrets.SUPPLY_KEY_DEVELOPMENT }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -37,7 +29,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.24.5"
+          flutter-version: "3.32.7"
           channel: "stable"
           cache: true
         id: flutter
@@ -49,21 +41,20 @@ jobs:
           working-directory: android
       - name: Configure Keystore
         run: |
-          echo "$RELEASE_SIGNING_KEY" > release.jks.b64
-          base64 -d -i release.jks.b64 > android/app/release.keystore
+          echo "$RELEASE_SIGNING_KEY" > upload-keystore.jks.b64
+          base64 -d -i upload-keystore.jks.b64 > android/app/upload-keystore.jks
       - name: Set up Supply Key file
         working-directory: android
-        run: echo "$SUPPLY_KEY" > fastlane/supply.json
+        run: echo "$SUPPLY_KEY_DEVELOPMENT" > fastlane/supply-key-development.json
       - name: Setup store key properties
         working-directory: android
         run: echo "$RELEASE_KEYSTORE_PROPERTIES" > key.properties
       - name: Ensure Fastlane Metadata Directory Exists
         working-directory: android
-        run: mkdir -p fastlane/metadata/android/en-US/changelogs
-      - name: Build and Deploy to Play Store
+        run: mkdir -p fastlane/metadata/android/id/changelogs
+      - name: Build and Deploy to Play Store Development
         working-directory: android
         run: |
-          bundle exec fastlane android production \
+          bundle exec fastlane android deployPlayConsoleDevelopment \
             version:${{ github.event.inputs.version }} \
-            build_number:${{ github.event.inputs.build_number }} \
             release_notes:"${{ github.event.inputs.release_notes }}"
