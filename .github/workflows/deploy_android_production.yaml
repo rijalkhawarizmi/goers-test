@@ -1,5 +1,4 @@
 name: Mixed inputs
-
 on:
   workflow_dispatch:
     inputs:
