@@ -16,7 +16,7 @@ on:
         default: "Production Release"
         type: string
       message:
-        description: 'Input message'
+        description: 'Input messagessssss'
         required: true
         type: string
 jobs:
